@@ -17,8 +17,14 @@ var commentRoutes  = require("./routes/comments");
 var campgroundRoutes  = require("./routes/campgrounds");
 var authRoutes  = require("./routes/auth");
 
-
-mongoose.connect("mongodb://localhost/yelp_camp",  { useNewUrlParser: true });
+var url = process.env.DATABSEURL || "mongodb://localhost/yelp_camp"
+mongoose.connect(url,
+ {  useNewUrlParser: true,
+    useCreateIndex: true,
+    useUnifiedTopology: true,
+    useFindAndModify: false}).then(() => console.log("worked"))
+    .catch(err => console.log("failed", err));
+// mongoose.connect("mongodb://localhost/yelp_camp");
 app.use(bodyParser.urlencoded({extended:true}));
 app.set("view engine", "ejs");
 app.use(express.static(__dirname + "/public"));
@@ -56,8 +62,8 @@ app.use("/campgrounds",campgroundRoutes);
 
 // seedDB();
 
+var PORT = process.env.PORT || 3000
 
-
-app.listen(process.env.PORT, process.env.IP, function(){
+app.listen(PORT, process.env.IP, function(){
     console.log("Server started!")
 });
